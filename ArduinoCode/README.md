@@ -1,7 +1,7 @@
 # Example of Arduino environment   
 I used [this](https://github.com/nopnop2002/Arduino-STM32-nRF24L01) library on Arduino environment.   
 
-# Wirering
+# Wiring
 
 |nRF24L01||ATMega328|ATMega2560|ESP8266||
 |:-:|:-:|:-:|:-:|:-:|:-:|

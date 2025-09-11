@@ -47,7 +47,7 @@ status = Nrf24_getStatus(&dev);
 
 ![config-app](https://github.com/nopnop2002/esp-idf-mirf/assets/6020549/01c6e755-05b1-43e7-90d5-c0eb063f5b82)
 
-# Wirering
+# Wiring
 __For this project we need one more connection for IRQ detection.__   
 |nRF24L01||ESP32|ESP32-S2/S3|ESP32-C2/C3/C6||
 |:-:|:-:|:-:|:-:|:-:|:-:|

@@ -69,7 +69,7 @@ __If you want to initialize the nRF24L01 settings after using the Advanced Setti
 Because nRF24L01 remembers the previous setting.   
 nRF24L01 does not have Software Reset function.   
 
-# Wirering
+# Wiring
 
 |nRF24L01||ESP32|ESP32-S2/S3|ESP32-C2/C3/C6||
 |:-:|:-:|:-:|:-:|:-:|:-:|
