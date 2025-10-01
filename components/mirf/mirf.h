@@ -111,7 +111,7 @@ typedef struct {
 #define RF_PWR_HIGH 2
 
 /* Device addrees length:3~5 bytes */
-#define mirf_ADDR_LEN    5
+#define mirf_ADDR_LEN    3
 
 /* 
  enable interrupt caused by RX_DR.

@@ -18,7 +18,7 @@
 #define HOST_ID SPI3_HOST
 #endif
 
-static const int SPI_Frequency = 4000000; // Stable even with a long jumper cable
+static const int SPI_Frequency = 8000000; // Stable even with a long jumper cable
 //static const int SPI_Frequency = 6000000;
 //static const int SPI_Frequency = 8000000; // Requires a short jumper cable
 //static const int SPI_Frequency = 10000000; // Unstable even with a short jumper cable
@@ -156,9 +156,9 @@ esp_err_t Nrf24_setRADDR(NRF24_t * dev, uint8_t * adr)
 {
 	esp_err_t ret = ESP_OK;
 	Nrf24_writeRegister(dev, RX_ADDR_P1, adr, mirf_ADDR_LEN);
-	uint8_t buffer[5];
+	uint8_t buffer[mirf_ADDR_LEN];
 	Nrf24_readRegister(dev, RX_ADDR_P1, buffer, sizeof(buffer));
-	for (int i=0;i<5;i++) {
+	for (int i=0;i<mirf_ADDR_LEN;i++) {
 		ESP_LOGD(TAG, "adr[%d]=0x%x buffer[%d]=0x%x", i, adr[i], i, buffer[i]);
 		if (adr[i] != buffer[i]) ret = ESP_FAIL;
 	}
@@ -172,9 +172,9 @@ esp_err_t Nrf24_setTADDR(NRF24_t * dev, uint8_t * adr)
 	esp_err_t ret = ESP_OK;
 	Nrf24_writeRegister(dev, RX_ADDR_P0, adr, mirf_ADDR_LEN); //RX_ADDR_P0 must be set to the sending addr for auto ack to work.
 	Nrf24_writeRegister(dev, TX_ADDR, adr, mirf_ADDR_LEN);
-	uint8_t buffer[5];
+	uint8_t buffer[mirf_ADDR_LEN];
 	Nrf24_readRegister(dev, RX_ADDR_P0, buffer, sizeof(buffer));
-	for (int i=0;i<5;i++) {
+	for (int i=0;i<mirf_ADDR_LEN;i++) {
 		ESP_LOGD(TAG, "adr[%d]=0x%x buffer[%d]=0x%x", i, adr[i], i, buffer[i]);
 		if (adr[i] != buffer[i]) ret = ESP_FAIL;
 	}
