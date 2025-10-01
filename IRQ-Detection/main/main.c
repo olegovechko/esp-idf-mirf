@@ -75,9 +75,25 @@ void receiver(void *pvParameters)
 	ESP_LOGI(pcTaskGetName(NULL), "Start");
 	NRF24_t dev;
 	Nrf24_init(&dev);
-	uint8_t payload = 32;
+	Nrf24_enableNoAckFeature(&dev);
+
+	uint8_t payload = 4;
 	uint8_t channel = CONFIG_RADIO_CHANNEL;
 	Nrf24_config(&dev, channel, payload);
+	Nrf24_configRegister(&dev, EN_AA, 0);
+	Nrf24_setRetransmitCount(&dev, 0);
+
+	uint8_t addrLen = 0b11; 
+	if (mirf_ADDR_LEN == 3)
+	{
+		addrLen = 0b01; 
+	} else
+	if (mirf_ADDR_LEN == 4)
+	{
+		addrLen = 0b10; 
+	}
+    Nrf24_configRegister(&dev, SETUP_AW, addrLen); // 3 byte addr
+
 
 	// Set my own address using 5 characters
 	esp_err_t ret = Nrf24_setRADDR(&dev, (uint8_t *)"FGHIJ");
@@ -108,7 +124,9 @@ void receiver(void *pvParameters)
 		// Wait for assertion of RX receive complete(RX_DR)
 		if(xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
 			ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
+			gpio_set_level(CONFIG_LED_GPIO, 0);
 			Nrf24_getData(&dev, buf);
+     		gpio_set_level(CONFIG_LED_GPIO, 1);
 			ESP_LOGI(pcTaskGetName(NULL), "Got data:%s", buf);
 		}
 	}
@@ -122,9 +140,24 @@ void sender(void *pvParameters)
 	ESP_LOGI(pcTaskGetName(NULL), "Start");
 	NRF24_t dev;
 	Nrf24_init(&dev);
-	uint8_t payload = 32;
+	Nrf24_enableNoAckFeature(&dev);
+
+	uint8_t payload = 4;
 	uint8_t channel = CONFIG_RADIO_CHANNEL;
 	Nrf24_config(&dev, channel, payload);
+	Nrf24_configRegister(&dev, EN_AA, 0);
+	Nrf24_setRetransmitCount(&dev, 0);
+	uint8_t addrLen = 0b11; 
+	if (mirf_ADDR_LEN == 3)
+	{
+		addrLen = 0b01; 
+	} else
+	if (mirf_ADDR_LEN == 4)
+	{
+		addrLen = 0b10; 
+	}
+    Nrf24_configRegister(&dev, SETUP_AW, addrLen); // 3 byte addr
+
 
 	// Set destination address using 5 characters
 	esp_err_t ret = Nrf24_setTADDR(&dev, (uint8_t *)"FGHIJ");
@@ -145,7 +178,9 @@ void sender(void *pvParameters)
 	while(1) {
 		TickType_t nowTick = xTaskGetTickCount();
 		sprintf((char *)buf, "Hello World %"PRIu32, nowTick);
-		Nrf24_send(&dev, buf);
+		gpio_set_level(CONFIG_LED_GPIO, 0);
+		Nrf24_sendNoAck(&dev, buf);
+		gpio_set_level(CONFIG_LED_GPIO, 1);
 		ESP_LOGI(pcTaskGetName(NULL), "Wait for sending.....");
 		// Wait for assertion of TX transmit retry over(MAX_RT)
 		if(xQueueReceive(gpio_evt_queue, &io_num, 1000/portTICK_PERIOD_MS)) {
@@ -165,6 +200,11 @@ void sender(void *pvParameters)
 void app_main(void)
 {
 	//Initialize gpio
+	// led
+    gpio_reset_pin(CONFIG_LED_GPIO);
+	gpio_set_direction(CONFIG_LED_GPIO, GPIO_MODE_OUTPUT);
+	gpio_set_level(CONFIG_LED_GPIO, 1);
+
 	//zero-initialize the config structure.
 	gpio_config_t io_conf = {};
 	//interrupt of falling edge
