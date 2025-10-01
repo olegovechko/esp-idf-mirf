@@ -27,4 +27,13 @@ menu "Application Configuration"
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
+	config LED_GPIO
+		int "LED GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 2 if IDF_TARGET_ESP32
+		default 2 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  8 # C3 and others
+		help
+			GPIO number (IOxx) to onboard led.
+
 endmenu 
