@@ -111,16 +111,19 @@ typedef struct {
 #define RF_PWR_HIGH 2
 
 /* Device addrees length:3~5 bytes */
-#define mirf_ADDR_LEN    3
+#define mirf_ADDR_LEN    5
 
 /* 
  enable interrupt caused by RX_DR.
  enable interrupt caused by TX_DS.
- enable interrupt caused by MAX_RT.
+ disable interrupt caused by MAX_RT.
  enable CRC and CRC data len=1
  mirf_CONFIG = 00001000B
 */
-//#define mirf_CONFIG ((1<<EN_CRC) | (0<<CRCO) )
+#define mirf_CONFIG ((1<<MASK_TX_DS) | (1<<MASK_RX_DR) | (1<<MASK_MAX_RT) | (1<<EN_CRC) | (0<<CRCO) )
+#define mirf_CONFIG_RX ((1<<MASK_TX_DS) | (0<<MASK_RX_DR) | (1<<MASK_MAX_RT) | (1<<EN_CRC) | (0<<CRCO) )
+#define mirf_CONFIG_TX ((0<<MASK_TX_DS) | (1<<MASK_RX_DR) | (1<<MASK_MAX_RT) | (1<<EN_CRC) | (0<<CRCO) )
+
 
 /*
  enable interrupt caused by RX_DR.
@@ -129,7 +132,8 @@ typedef struct {
  enable CRC and CRC data len=1
  mirf_CONFIG == 00101000B
 */
-#define mirf_CONFIG ((1<<MASK_TX_DS) | (1<<EN_CRC) | (0<<CRCO) )
+//#define mirf_CONFIG ((1<<MASK_TX_DS) | (1<<EN_CRC) | (0<<CRCO) )
+
 
 /**
  * Power Amplifier level.

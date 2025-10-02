@@ -77,7 +77,7 @@ void receiver(void *pvParameters)
 	Nrf24_init(&dev);
 	Nrf24_enableNoAckFeature(&dev);
 
-	uint8_t payload = 4;
+	uint8_t payload = 2;
 	uint8_t channel = CONFIG_RADIO_CHANNEL;
 	Nrf24_config(&dev, channel, payload);
 	Nrf24_configRegister(&dev, EN_AA, 0);
@@ -127,7 +127,7 @@ void receiver(void *pvParameters)
 			gpio_set_level(CONFIG_LED_GPIO, 0);
 			Nrf24_getData(&dev, buf);
      		gpio_set_level(CONFIG_LED_GPIO, 1);
-			ESP_LOGI(pcTaskGetName(NULL), "Got data:%s", buf);
+			ESP_LOGI(pcTaskGetName(NULL), "Got data: %s", buf);
 		}
 	}
 }
@@ -142,7 +142,7 @@ void sender(void *pvParameters)
 	Nrf24_init(&dev);
 	Nrf24_enableNoAckFeature(&dev);
 
-	uint8_t payload = 4;
+	uint8_t payload = 2;
 	uint8_t channel = CONFIG_RADIO_CHANNEL;
 	Nrf24_config(&dev, channel, payload);
 	Nrf24_configRegister(&dev, EN_AA, 0);
@@ -180,16 +180,14 @@ void sender(void *pvParameters)
 		sprintf((char *)buf, "Hello World %"PRIu32, nowTick);
 		gpio_set_level(CONFIG_LED_GPIO, 0);
 		Nrf24_sendNoAck(&dev, buf);
-		gpio_set_level(CONFIG_LED_GPIO, 1);
-		ESP_LOGI(pcTaskGetName(NULL), "Wait for sending.....");
-		// Wait for assertion of TX transmit retry over(MAX_RT)
+		//ESP_LOGI(pcTaskGetName(NULL), "Wait for sending.....");
 		if(xQueueReceive(gpio_evt_queue, &io_num, 1000/portTICK_PERIOD_MS)) {
-			ESP_LOGW(pcTaskGetName(NULL),"Send fail:");
-
-		// Assert does not occur after successful transmission
-		} else {
+			gpio_set_level(CONFIG_LED_GPIO, 1);
 			ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
 			ESP_LOGI(pcTaskGetName(NULL),"Send success:%s", buf);
+		} else
+		{
+			gpio_set_level(CONFIG_LED_GPIO, 1);
 		}
 		vTaskDelay(1000/portTICK_PERIOD_MS);
 	}
