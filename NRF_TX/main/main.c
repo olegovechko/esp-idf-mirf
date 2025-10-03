@@ -173,23 +173,35 @@ void sender(void *pvParameters)
 	//Print settings
 	Nrf24_printDetails(&dev);
 
-	uint8_t buf[32];
+	uint8_t buf[4][2] = {"1\0", "2\0", "3\0", "4\0"};
+
 	uint32_t io_num;
+
+    TickType_t lastTick = xTaskGetTickCount();
+	uint32_t nextTXDelay = 7;
+	uint8_t currID = 0;
+
 	while(1) {
 		TickType_t nowTick = xTaskGetTickCount();
-		sprintf((char *)buf, "Hello World %"PRIu32, nowTick);
-		gpio_set_level(CONFIG_LED_GPIO, 0);
-		Nrf24_sendNoAck(&dev, buf);
-		//ESP_LOGI(pcTaskGetName(NULL), "Wait for sending.....");
-		if(xQueueReceive(gpio_evt_queue, &io_num, 1000/portTICK_PERIOD_MS)) {
-			gpio_set_level(CONFIG_LED_GPIO, 1);
-			ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
-			ESP_LOGI(pcTaskGetName(NULL),"Send success:%s", buf);
-		} else
+		//sprintf((char *)buf, "01");
+		if (lastTick + nextTXDelay <= nowTick)
 		{
-			gpio_set_level(CONFIG_LED_GPIO, 1);
+			lastTick = nowTick;
+			gpio_set_level(CONFIG_LED_GPIO, 0);
+			Nrf24_sendNoAck(&dev, buf[currID]);
+			currID = (currID + 1) % 4;
+			//Nrf24_send(&dev, buf);
+			//ESP_LOGI(pcTaskGetName(NULL), "Wait for sending.....");
+			if(xQueueReceive(gpio_evt_queue, &io_num, 1000/portTICK_PERIOD_MS)) {
+				gpio_set_level(CONFIG_LED_GPIO, 1);
+				//ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
+				//ESP_LOGI(pcTaskGetName(NULL),"Send success:%s", buf);
+			} else
+			{
+				gpio_set_level(CONFIG_LED_GPIO, 1);
+			}
 		}
-		vTaskDelay(1000/portTICK_PERIOD_MS);
+		vTaskDelay(1);
 	}
 }
 #endif // CONFIG_SENDER

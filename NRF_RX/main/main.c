@@ -123,11 +123,14 @@ void receiver(void *pvParameters)
 	while(1) {
 		// Wait for assertion of RX receive complete(RX_DR)
 		if(xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
-			ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
+			//ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
 			gpio_set_level(CONFIG_LED_GPIO, 0);
 			Nrf24_getData(&dev, buf);
-     		gpio_set_level(CONFIG_LED_GPIO, 1);
-			ESP_LOGI(pcTaskGetName(NULL), "Got data: %s", buf);
+			if (buf[0] != '1')
+			{
+	     		gpio_set_level(CONFIG_LED_GPIO, 1);
+			}
+			//ESP_LOGI(pcTaskGetName(NULL), "Got data: %s", buf);
 		}
 	}
 }
