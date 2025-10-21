@@ -178,7 +178,7 @@ void sender(void *pvParameters)
 	uint32_t io_num;
 
     TickType_t lastTick = xTaskGetTickCount();
-	uint32_t nextTXDelay = 7;
+	uint32_t nextTXDelay = 10;
 	uint8_t currID = 0;
 
 	while(1) {
@@ -189,7 +189,7 @@ void sender(void *pvParameters)
 			lastTick = nowTick;
 			gpio_set_level(CONFIG_LED_GPIO, 0);
 			Nrf24_sendNoAck(&dev, buf[currID]);
-			currID = (currID + 1) % 4;
+			currID = (currID + 1) % 2;
 			//Nrf24_send(&dev, buf);
 			//ESP_LOGI(pcTaskGetName(NULL), "Wait for sending.....");
 			if(xQueueReceive(gpio_evt_queue, &io_num, 1000/portTICK_PERIOD_MS)) {

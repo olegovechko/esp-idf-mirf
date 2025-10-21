@@ -35,5 +35,14 @@ menu "Application Configuration"
 		default  8 # C3 and others
 		help
 			GPIO number (IOxx) to onboard led.
+	
+	config CAMERA_GPIO
+		int "CAMERA GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 9 if IDF_TARGET_ESP32
+		default 9 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  9 # C3 and others
+		help
+			GPIO number (IOxx) to camera S
 
 endmenu 
