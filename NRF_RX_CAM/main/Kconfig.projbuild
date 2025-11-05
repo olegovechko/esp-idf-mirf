@@ -1,0 +1,59 @@
+menu "Application Configuration"
+
+	choice DIRECTION
+		prompt "Communication polarity"
+		default SENDER
+		help
+			Select Communication polarity.
+		config SENDER
+			bool "As the sender"
+			help
+				As the sender.
+		config RECEIVER
+			bool "As the receiver"
+			help
+				As the receiver.
+	endchoice
+
+	config IRQ_GPIO
+		int "IRQ GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 15 if IDF_TARGET_ESP32
+		default 38 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  5 # C3 and others
+		help
+			GPIO number (IOxx) to IRQ.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MISO.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config LED_GPIO
+		int "LED GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 2 if IDF_TARGET_ESP32
+		default 2 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  8 # C3 and others
+		help
+			GPIO number (IOxx) to onboard led.
+	
+	config CAMERA_GPIO
+		int "CAMERA GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 7 if IDF_TARGET_ESP32
+		default 7 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  7 # C3 and others
+		help
+			GPIO number (IOxx) to camera
+
+	config LASER_GPIO
+		int "LASER GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 6 if IDF_TARGET_ESP32
+		default 6 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  6 # C3 and others
+		help
+			GPIO number (IOxx) to laser
+
+
+
+endmenu 
