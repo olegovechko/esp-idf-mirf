@@ -39,10 +39,21 @@ menu "Application Configuration"
 	config CAMERA_GPIO
 		int "CAMERA GPIO number"
 		range 0 GPIO_RANGE_MAX
-		default 9 if IDF_TARGET_ESP32
-		default 9 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-		default  9 # C3 and others
+		default 7 if IDF_TARGET_ESP32
+		default 7 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  7 # C3 and others
 		help
-			GPIO number (IOxx) to camera S
+			GPIO number (IOxx) to camera
+
+	config LASER_GPIO
+		int "LASER GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 6 if IDF_TARGET_ESP32
+		default 6 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  6 # C3 and others
+		help
+			GPIO number (IOxx) to laser
+
+
 
 endmenu 

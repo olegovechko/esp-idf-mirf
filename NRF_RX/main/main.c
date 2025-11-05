@@ -128,11 +128,11 @@ void receiver(void *pvParameters)
 		if(xQueueReceive(gpio_evt_queue, &io_num, 1)) {
 			//ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
 			Nrf24_getData(&dev, buf);
-     		bool bOn = true;//buf[0] == '1';
+     		bool bOn = buf[0] == '1';
 			gpio_set_level(CONFIG_LED_GPIO, !bOn);
-			gpio_set_level(CONFIG_CAMERA_GPIO, bOn);
-			if (bOn)
-				lastOnTick = xTaskGetTickCount();
+			gpio_set_level(CONFIG_LASER_GPIO, bOn);
+			gpio_set_level(CONFIG_CAMERA_GPIO, true);
+			lastOnTick = xTaskGetTickCount();
 			//ESP_LOGI(pcTaskGetName(NULL), "Got data: %s", buf);
 		}
 
@@ -142,6 +142,7 @@ void receiver(void *pvParameters)
 			lastOnTick = 0;
 			gpio_set_level(CONFIG_LED_GPIO, true);
 			gpio_set_level(CONFIG_CAMERA_GPIO, false);
+			gpio_set_level(CONFIG_LASER_GPIO, false);
 		}
 	}
 }
@@ -220,6 +221,10 @@ void app_main(void)
     gpio_reset_pin(CONFIG_CAMERA_GPIO);
 	gpio_set_direction(CONFIG_CAMERA_GPIO, GPIO_MODE_OUTPUT);
 	gpio_set_level(CONFIG_CAMERA_GPIO, 0);
+
+    gpio_reset_pin(CONFIG_LASER_GPIO);
+	gpio_set_direction(CONFIG_LASER_GPIO, GPIO_MODE_OUTPUT);
+	gpio_set_level(CONFIG_LASER_GPIO, 0);
 
 	//zero-initialize the config structure.
 	gpio_config_t io_conf = {};
