@@ -128,7 +128,7 @@ void receiver(void *pvParameters)
 		if(xQueueReceive(gpio_evt_queue, &io_num, 1)) {
 			//ESP_LOGD(pcTaskGetName(NULL), "GPIO[%"PRIu32"] intr, val: %d", io_num, gpio_get_level(io_num));
 			Nrf24_getData(&dev, buf);
-     		bool bOn = buf[0] == '4';
+     		bool bOn = buf[0] == '1';
 			gpio_set_level(CONFIG_LED_GPIO, !bOn);
 			gpio_set_level(CONFIG_LASER_GPIO, bOn);
 			gpio_set_level(CONFIG_CAMERA_GPIO, true);
