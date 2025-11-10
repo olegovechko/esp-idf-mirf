@@ -36,14 +36,14 @@ menu "Application Configuration"
 		help
 			GPIO number (IOxx) to onboard led.
 	
-	config CAMERA_GPIO
+	config TRIGGER_GPIO
 		int "CAMERA GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 7 if IDF_TARGET_ESP32
 		default 7 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  7 # C3 and others
 		help
-			GPIO number (IOxx) to camera
+			GPIO number (IOxx) to trigger
 
 	config LASER_GPIO
 		int "LASER GPIO number"
@@ -54,6 +54,13 @@ menu "Application Configuration"
 		help
 			GPIO number (IOxx) to laser
 
-
+	config POWERKEY_GPIO
+		int "KEY GPIO number"
+		range 0 21
+		default 21 if IDF_TARGET_ESP32
+		default 21 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  21 # C3 and others
+		help
+			GPIO number (IOxx) to wake power supply
 
 endmenu 
